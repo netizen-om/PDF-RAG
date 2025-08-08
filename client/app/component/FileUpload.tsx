@@ -9,10 +9,23 @@ const FileUpload : React.FC = () => {
         const ele = document.createElement('input');
         ele.setAttribute('type', 'file');
         ele.setAttribute('accept', 'application/pdf');
-        ele.addEventListener('change', (e) => {
+        ele.addEventListener('change', async(e) => {
 
             if (ele.files && ele.files.length > 0) {
                 const file = ele.files.item(0);
+
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('pdf', file)
+
+                    await fetch('http://localhost:8000/upload/pdf', {
+                    method : "POST",
+                    body : formData
+                    })
+                    console.log("File uploaded");
+                    
+                }
+                
                 
             }
         })
