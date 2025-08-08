@@ -29,12 +29,12 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <section className="min-h-screen w-full flex justify-center items-center">
             <SignedOut >
-              <SignIn/>
-              {/* <SignUpButton /> */}
+              <section className="min-h-screen w-full flex justify-center items-center">
+                {/* <SignIn/> */}
+                <SignUpButton />
+              </section>
             </SignedOut>
-          </section>
           <SignedIn>
             {children}
           </SignedIn>
