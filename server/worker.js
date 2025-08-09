@@ -21,10 +21,20 @@ const worker = new Worker(
         console.log("DOCS : ", docs);
         
        const embeddings = new GoogleGenerativeAIEmbeddings({
-        model : 'gemini-2.O-flash',
+        model : 'embedding-001',
         apiKey : process.env.GOOGLE_API_KEY
        });
     
+       const vectorStore = await QdrantVectorStore.fromExistingCollection(
+            embeddings,
+            {
+                url : "http://localhost:6333",
+                collectionName : 'pdf-docs'
+            }
+       )
+       await vectorStore.addDocuments(docs);
+       console.log("All docs are added");
+       
        
     },
     {
