@@ -23,6 +23,9 @@ importers:
       '@langchain/textsplitters':
         specifier: ^0.1.0
         version: 0.1.0(@langchain/core@0.3.68(openai@5.12.2(ws@8.18.3)(zod@3.25.76)))
+      '@qdrant/js-client-rest':
+        specifier: ^1.15.0
+        version: 1.15.0(typescript@5.9.2)
       '@types/multer':
         specifier: ^2.0.0
         version: 2.0.0
