@@ -6,7 +6,7 @@ import { CharacterTextSplitter } from "@langchain/textsplitters";
 import { log } from "console";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
-const client = new QdrantClient({ url: process.env.QDRANT_URL });
+const client = new QdrantClient({ url: "http://localhost:6333" });
 
 const worker = new Worker(
     'file-upload-queue',
