@@ -4,9 +4,15 @@ import multer from "multer"
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { GoogleGenerativeAIEmbeddings  }  from "@langchain/google-genai"
 import { Queue } from "bullmq"
+import { generateText } from 'ai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_API_KEY,
+});
 
 const queue = new Queue("file-upload-queue", {
   connection: {
@@ -65,7 +71,20 @@ app.get('/chat', async (req, res) => {
   })
 
   const result = await retrival.invoke(userQuery);
-  return res.json({result})
+
+  const SYSTEM_PROMPT = `You are helpful AI Assistant who answers the user query based on the available context from PDF file
+  CONTEXT :
+  ${JSON.stringify(result)}
+  `
+   const { text } = await generateText({
+    model: google('gemini-2.0-flash'), // pick your model
+    system: SYSTEM_PROMPT,                  // equivalent to OpenAI's system role
+    prompt: userQuery,                       // equivalent to user role
+  });
+
+  console.log(text);
+
+  return res.json({text})
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
