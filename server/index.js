@@ -4,11 +4,19 @@ import multer from "multer"
 import { Queue } from "bullmq"
 
 const queue = new Queue("file-upload-queue", {
-  connection : {
-      host : 'localhost',
-      port : 6379,
+  connection: {
+    host: 'localhost',
+    port: 6379,
   },
 });
+
+const vectorStore = await QdrantVectorStore.fromExistingCollection(
+  embeddings,
+  {
+    url: "http://localhost:6333",
+    collectionName: 'pdf-docs'
+  }
+)
 
 const app = express()
 const port = 8000
@@ -19,25 +27,27 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, uniqueSuffix + '-' + file.originalname )
+    cb(null, uniqueSuffix + '-' + file.originalname)
   }
 })
 
-const upload = multer({ storage : storage })
+const upload = multer({ storage: storage })
 
 app.use(cors())
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
-app.post('/upload/pdf', upload.single('pdf'), (req, res) =>  {
+app.post('/upload/pdf', upload.single('pdf'), (req, res) => {
 
-    queue.add('file-ready', JSON.stringify({
-        filename : req.file.originalname,
-        destination : req.file.destination,
-        path : req.file.path,
-    }))
-    return res.json({ message : "File uploaded"})
+  queue.add('file-ready', JSON.stringify({
+    filename: req.file.originalname,
+    destination: req.file.destination,
+    path: req.file.path,
+  }))
+  return res.json({ message: "File uploaded" })
 })
+
+
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
