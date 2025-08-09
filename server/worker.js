@@ -5,6 +5,7 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { CharacterTextSplitter } from "@langchain/textsplitters";
 import { log } from "console";
 import { QdrantClient } from "@qdrant/js-client-rest";
+import { GoogleGenerativeAIEmbeddings  }  from "@langchain/google-genai"
 
 const client = new QdrantClient({ url: "http://localhost:6333" });
 
@@ -19,8 +20,12 @@ const worker = new Worker(
         const docs = await loader.load();
         console.log("DOCS : ", docs);
         
+       const embeddings = new GoogleGenerativeAIEmbeddings({
+        model : 'gemini-2.O-flash',
+        apiKey : process.env.GOOGLE_API_KEY
+       });
+    
        
-        
     },
     {
         concurrency : 100,
