@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch index.js",
-    "dev:worker": "node --watch worker.js"
+    "dev:worker": "nodemon worker.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "@types/multer": "^2.0.0",
     "bullmq": "^5.56.9",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "~4.21.2",
     "multer": "^2.0.2",
     "pdf-parse": "^1.1.1"
