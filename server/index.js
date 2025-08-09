@@ -1,13 +1,23 @@
 import express from "express"
 import cors from "cors"
 import multer from "multer"
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { GoogleGenerativeAIEmbeddings  }  from "@langchain/google-genai"
 import { Queue } from "bullmq"
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const queue = new Queue("file-upload-queue", {
   connection: {
     host: 'localhost',
     port: 6379,
   },
+});
+
+const embeddings = new GoogleGenerativeAIEmbeddings({
+  model: 'embedding-001',
+  apiKey: process.env.GOOGLE_API_KEY
 });
 
 const vectorStore = await QdrantVectorStore.fromExistingCollection(
@@ -48,6 +58,14 @@ app.post('/upload/pdf', upload.single('pdf'), (req, res) => {
   return res.json({ message: "File uploaded" })
 })
 
+app.get('/chat', async (req, res) => {
+  const userQuery = "What are key course outcomes"
+  const retrival = vectorStore.asRetriever({
+    k: 2,
+  })
 
+  const result = await retrival.invoke(userQuery);
+  return res.json({result})
+})
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
