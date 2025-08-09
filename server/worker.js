@@ -3,6 +3,7 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { CharacterTextSplitter } from "@langchain/textsplitters";
+import { log } from "console";
 
 const worker = new Worker(
     'file-upload-queue',
@@ -13,13 +14,9 @@ const worker = new Worker(
         //PDF loader
         const loader = new PDFLoader(data.path);
         const docs = await loader.load();
-
-        const textSplitter = new CharacterTextSplitter({
-            chunkSize: 100,
-            chunkOverlap: 0,
-        });
-        const texts = await textSplitter.splitText(docs);
-        console.log(texts);
+        console.log("DOCS : ", docs);
+        
+       
         
     },
     {
