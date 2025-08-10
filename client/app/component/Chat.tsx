@@ -21,7 +21,7 @@ interface IMessage {
 }
 
 const ChatComponent: React.FC = () => {
-  const [message, setMessage] = React.useState<string>('');
+  const [message, setMessage] = React.useState('');
   const [messages, setMessages] = React.useState<IMessage[]>([]);
 
   const handleSendChatMessage = async () => {
@@ -30,18 +30,15 @@ const ChatComponent: React.FC = () => {
     const data = await res.json();
     setMessages((prev) => [
       ...prev,
-      {
-        role: 'assistant',
-        content: data?.message,
-      },
+      { role: 'assistant', content: data?.message },
     ]);
     setMessage('');
   };
 
   return (
-    <div className="p-4 pb-20">
-      {/* Chat messages */}
-      <div className="space-y-3">
+    <div className="p-4 h-full flex flex-col">
+      {/* Scrollable messages */}
+      <div className="flex-1 overflow-y-auto space-y-3">
         {messages
           .filter((m) => m.role === 'assistant')
           .map((message, index) => (
@@ -54,8 +51,8 @@ const ChatComponent: React.FC = () => {
           ))}
       </div>
 
-      {/* Input bar */}
-      <div className="fixed bottom-4 left-0 w-full flex gap-3 px-4">
+      {/* Input bar at bottom */}
+      <div className="mt-3 flex gap-3">
         <Input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
