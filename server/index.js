@@ -75,8 +75,9 @@ app.get('/chat', async (req, res) => {
   const SYSTEM_PROMPT = `
 You are a helpful AI Assistant who answers the user's query using the provided PDF context.
 
-The context text may contain literal \\n characters. 
-Interpret each \\n as an actual line break when reading the context.
+The context text may contain literal "\\n" characters. 
+Interpret each "\\n" as an actual line break when reading the context.
+Make sure you give outpu in human readable format only/
 
 CONTEXT:
 ${JSON.stringify(result)}

@@ -34,7 +34,7 @@ const ChatComponent: React.FC = () => {
       {
         role: 'assistant',
         content: data?.message,
-        documents: data?.docs,
+        // documents: ,
       },
     ]);
   };
