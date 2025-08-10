@@ -65,18 +65,26 @@ app.post('/upload/pdf', upload.single('pdf'), (req, res) => {
 })
 
 app.get('/chat', async (req, res) => {
-  const userQuery = "What are key course outcomes"
+  const userQuery = req.query.message;
   const retrival = vectorStore.asRetriever({
     k: 2,
   })
 
   const result = await retrival.invoke(userQuery);
 
-  const SYSTEM_PROMPT = `You are helpful AI Assistant who answers the user query based on the available context from PDF file
-  CONTEXT :
-  ${JSON.stringify(result)}
-  `
-   const { text } = await generateText({
+  const SYSTEM_PROMPT = `
+You are a helpful AI Assistant who answers the user's query using the provided PDF context.
+
+The context text may contain literal \\n characters. 
+Interpret each \\n as an actual line break when reading the context.
+
+CONTEXT:
+${JSON.stringify(result)}
+
+If the answer is not found in the context, say "I could not find that information in the PDF."
+`;
+
+const { text } = await generateText({
     model: google('gemini-2.0-flash'), // pick your model
     system: SYSTEM_PROMPT,                  // equivalent to OpenAI's system role
     prompt: userQuery,                       // equivalent to user role
@@ -84,7 +92,10 @@ app.get('/chat', async (req, res) => {
 
   console.log(text);
 
-  return res.json({text})
+  return res.json({
+    message: text,
+    docs: result,
+  });
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
